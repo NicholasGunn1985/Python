@@ -7,17 +7,17 @@ def fx(n):
         reminder.insert(0,str(i))
         reminder1 = reminder
         reminder = []
-        str_list = "".join(reminder1)
-        length = len(str_list)
+        str_element = "".join(reminder1)
+        length = len(str_element)
         return (str_list,length)
     else:
         return fx(i)
         
-def trans(n):
-     if n == 1:
+def trans(m):
+     if m == 1:
         return ("00000001")
      else:
-        result = fx(n)
+        result = fx(m)
         return ("0"*(8-result[1])+result[0])
                   
 def split(addr):
