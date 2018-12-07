@@ -17,4 +17,6 @@ def nextbigger(num):
         return L1[L1.index(s)+1]
     except IndexError:
         return L1[-1]
+    except ValueError:
+        return s
     
