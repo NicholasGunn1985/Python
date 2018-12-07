@@ -1,0 +1,16 @@
+*九九乘法表*
+***
+"\n".join([i] j)
+i:
+    " ".join([])
+        [] : "%s*%s=%s"%(y,x,x*y) for y in range(1,x+1)
+j:
+    for x in range(1,10)
+***
+print("\n".join([" ".join(["%s*%s=%s"%(y,x,x*y) for y in range(1,x+1)]) for x in range(1,10)]))
+
+
+
+
+*3个一组*
+print([[y for y in range(1,10)][x:x+3] for x in range(0,7,3)])
