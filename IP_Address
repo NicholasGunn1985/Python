@@ -9,7 +9,7 @@ def fx(n):
         reminder = []
         str_element = "".join(reminder1)
         length = len(str_element)
-        return (str_list,length)
+        return (str_element,length)
     else:
         return fx(i)
         
