@@ -1,0 +1,23 @@
+from wxpy import Bot
+from pyecharts import charts
+import webbrowser
+
+bot = Bot()
+friends = bot.friends(cache_path=True)
+attr = ['男性','女性','不清楚']
+value = [0,0,0]
+for friend in friends:
+    if friend.sex == 1:
+        value[0] += 1
+    elif friend.sex == 2:
+        value[1] += 1
+    else:
+        value[2] += 1
+
+pie = charts.Pie(cache_path=True)
+
+data_pair = dict(zip(attr,value))
+
+pie.add("guoxiao's friends",data_pair.items())
+pie.render('friends.html')
+webbrowser.open('friends.html')
