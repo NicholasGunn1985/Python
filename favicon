@@ -1,0 +1,7 @@
+import requests
+
+r = requests.get("https://docs.docker.com/favicon.ico")
+pic_bin = r.content
+
+with open(r"C:\Users\dell\Desktop\文件名.jpg","wb") as f:
+    f.write(pic_bin)
