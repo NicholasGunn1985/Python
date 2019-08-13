@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>duqu</title>
+<script src="http://libs.baidu.com/jquery/1.9.0/jquery.js"></script>
+<script>
+    $(function(){
+        $("#content3").load('abc');
+    });
+</script>
+
+</head>
+<div id="content3"></div>
+</body>
+</html>
