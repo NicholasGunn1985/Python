@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>倒计时</title>
+    <script>
+        function timecounter(){
+            var currentDate = new Date();
+            var targetDate = new Date(2020,0,31);
+            var seconds = (targetDate.getTime()-currentDate.getTime())/1000;
+            seconds = parseInt(seconds)
+            var day = parseInt(seconds/86400);
+            seconds%=86400;
+            var hour = parseInt(seconds/86400);
+            seconds%=3600;
+            var minute = parseInt(seconds / 60);
+            var second = seconds %= 60;
+            var display = document.getElementById('display');
+            display.innerHTML = "距离"+targetDate.getFullYear()+ "年还有"+day+"天"+hour+"小时"+minute+"分钟"+second+"秒";
+        }
+        setInterval('timecounter()',1000);
+    </script>
+</head>
+<body>
+    <span id="display"></span>
+</body>
+</html>
