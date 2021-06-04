@@ -1,0 +1,58 @@
+import os
+from types import FrameType
+import requests
+from multiprocessing.pool import ThreadPool as Pool
+import _thread
+import time
+from functools import partial
+
+
+
+
+header = {
+    'origin': 'http://live.baidu.com',
+    'referer': 'http://live.baidu.com',
+    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.72'
+}
+
+path = 'C:/Users/CDHT-GX/Desktop/python/spider/'
+
+if os.path.exists(path + 'HUAWEI/'):
+    pass
+
+else:
+    os.makedirs(path + 'HUAWEI/')
+
+
+def download(tag,fragment):
+    url = 'http://p2.bdstatic.com/rtmp.liveshow.lss-user.baidubce.com/live/stream_bduid_4908353221_4487335824/recording_{}/recording_{}-{}.ts'.format(tag,tag,fragment)
+    with open(path + "HUAWEI/" + str(url.split('/')[-1][-30:]),'wb') as f:
+        try:
+            r = requests.get(url,headers=header)
+            r.raise_for_status()
+            r.encoding = 'utf-8'
+            f.write(r.content)
+            print('正在下载第 {} 个片段。'.format(fragment))
+        except:
+            print("error")
+
+
+def delivery(tag,fragment):
+    partial_work = partial(download,tag)
+    pool= Pool(100)
+    # result = pool.map(download,tag,index,range(0,fragment))
+    result = pool.map(partial_work,range(0,fragment))
+    pool.close()
+    pool.join()
+
+
+    
+try:
+    _thread.start_new_thread(delivery,(20210602193019,277,))
+    _thread.start_new_thread(delivery,(20210602210317,99,))
+
+except:
+    print("error")
+
+while 1:
+    pass
