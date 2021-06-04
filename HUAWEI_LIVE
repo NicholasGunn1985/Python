@@ -1,0 +1,79 @@
+import os
+import requests
+from multiprocessing.pool import ThreadPool as Pool
+import _thread
+import time
+
+
+
+header = {
+    'origin': 'http://live.baidu.com',
+    'referer': 'http://live.baidu.com',
+    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.72'
+}
+
+path = 'C:/Users/CDHT-GX/Desktop/python/spider/'
+
+if os.path.exists(path + 'HUAWEI/'):
+    pass
+
+else:
+    os.makedirs(path + 'HUAWEI/')
+
+
+def download1(num):
+    url = 'http://p2.bdstatic.com/rtmp.liveshow.lss-user.baidubce.com/live/stream_bduid_4908353221_4487335824/recording_{}/recording_{}-{}.ts'.format(20210602193019,20210602193019,num)
+    # print(url)
+    with open(path + "HUAWEI/" + str(url.split('/')[-1][-30:]),'wb') as f:
+        try:
+            r = requests.get(url,headers=header)
+            r.raise_for_status()
+            r.encoding = 'utf-8'
+            f.write(r.content)
+            print('正在下载第 {} 个片段。'.format(num))
+        except:
+            print("error")
+
+def download2(num):
+    url = 'http://p2.bdstatic.com/rtmp.liveshow.lss-user.baidubce.com/live/stream_bduid_4908353221_4487335824/recording_{}/recording_{}-{}.ts'.format(20210602210317,20210602210317,num)
+    # print(url)
+
+
+    with open(path + "HUAWEI/" + str(url.split('/')[-1][-30:]),'wb') as f:
+        try:
+            r = requests.get(url,headers=header)
+            r.raise_for_status()
+            r.encoding = 'utf-8'
+            f.write(r.content)
+            print('正在下载第 {} 个片段。'.format(num))
+        except:
+            print("error")
+
+
+def delivery1(fragment):
+
+    pool= Pool(100)
+    # result = pool.map(download,tag,index,range(0,fragment))
+    result = pool.map(download1,range(0,fragment))
+    pool.close()
+    pool.join()
+
+def delivery2(fragment):
+    
+    pool= Pool(100)
+    # result = pool.map(download,tag,index,range(0,fragment))
+    result = pool.map(download2,range(0,fragment))
+    pool.close()
+    pool.join()
+
+
+    
+try:
+    _thread.start_new_thread(delivery1,(277,))
+    _thread.start_new_thread(delivery2,(99,))
+
+except:
+    print("error")
+
+while 1:
+    pass
