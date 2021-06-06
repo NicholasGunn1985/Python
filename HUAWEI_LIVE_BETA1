@@ -1,0 +1,81 @@
+import os
+from types import FrameType
+import requests
+from multiprocessing.pool import ThreadPool as Pool
+import _thread
+import time
+from functools import partial
+from tqdm import tqdm
+
+
+header = {
+    'origin': 'http://live.baidu.com',
+    'referer': 'http://live.baidu.com',
+    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.72'
+}
+
+path = 'C:/Users/郭晓/Desktop/Spider/'
+
+if os.path.exists(path + 'HUAWEI/'):
+    pass
+
+else:
+    os.makedirs(path + 'HUAWEI/')
+
+tags = [20210602193019,20210602210317]
+nloops = range(len(tags))
+
+fragments = [277,99]
+
+def download(tag,fragment):
+    url = 'http://p2.bdstatic.com/rtmp.liveshow.lss-user.baidubce.com/live/stream_bduid_4908353221_4487335824/recording_{}/recording_{}-{}.ts'.format(tag,tag,fragment)
+    with open(path + "HUAWEI/" + str(url.split('/')[-1][-18:]),'wb') as f:
+        try:
+            r = requests.get(url,headers=header)
+            r.raise_for_status()
+            r.encoding = 'utf-8'
+            f.write(r.content)
+            print('正在下载第 {} 个片段。'.format(fragment))
+        except:
+            download(tag,fragment)
+    
+
+
+def delivery(tag,lock,fragment):
+    partial_work = partial(download,tag)
+    pool= Pool(100)
+    # result = pool.map(download,tag,index,range(0,fragment))
+    result = pool.map(partial_work,range(0,fragment))
+    pool.close()
+    pool.join()
+    lock.release()
+
+
+def main():
+    locks = []
+    for i in nloops:
+        lock = _thread.allocate_lock()
+        lock.acquire()
+        locks.append(lock)
+        try:
+            _thread.start_new_thread(delivery,(tags[i],locks[i],fragments[i],))
+        except:
+            print('error')
+        while locks[i].locked():pass
+
+def get_video():
+    link = path + 'HUAWEI/'
+    files = os.listdir(path + 'HUAWEI/')
+    for file in tqdm(files,desc="正在转换视频格式..."):
+        if os.path.exists(link + file):
+            with open(link + file,'rb') as f1:
+                with open(link + "2021华为Harmonic鸿蒙系统发布会.mp4",'ab') as f2:
+                    f2.write(f1.read())
+        else:
+            print("error")
+
+if __name__ == "__main__":
+    main()
+    get_video()
+
+
