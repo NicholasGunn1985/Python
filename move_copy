@@ -1,0 +1,58 @@
+from apscheduler.schedulers.blocking import BlockingScheduler
+from datetime import datetime
+import os
+import shutil
+
+# os.path.getatime(file) 输出文件访问时间
+# os.path.getctime(file) 输出文件的创建时间
+# os.path.getmtime(file) 输出文件最近修改时间
+
+
+def mycopyfile(srcfile,dstfile):
+    if not os.path.isfile(srcfile):
+        print('file is not exist!')
+
+    else:
+        shutil.copyfile(srcfile,dstfile)
+        print('ok')
+
+#非周末情况
+def new_report():
+    files_dir = r'C:\Users\CDHT-GX\Desktop\美图批处理照片'
+    lists = os.listdir(files_dir)  # 列出目录的下所有文件和文件夹保存到lists
+    #print(lists)
+    lists.sort(key=lambda fn:os.path.getmtime(files_dir + "/" + fn))  # 按时间排序
+    #print(lists[-2])
+    #newest_file = os.path.join(files_dir,lists[-1])    # 获取最新的文件保存到newest_file，-1代表列表最后一个，-2代表倒数第二
+    newest_file = lists[-1]
+    # print(newest_file)
+
+    srcfile = 'C:/Users/CDHT-GX/Desktop/美图批处理照片/' + newest_file
+    dstfile = 'C:/Users/CDHT-GX/Desktop/python_test/' + newest_file
+
+    mycopyfile(srcfile,dstfile)
+    
+
+#周末情况
+def new_report1():
+    lst = []
+    files_dir = r'C:\Users\CDHT-GX\Desktop\美图批处理照片'
+    lists = os.listdir(files_dir)  # 列出目录的下所有文件和文件夹保存到lists
+    lists.sort(key=lambda fn:os.path.getmtime(files_dir + "/" + fn))  # 按时间排序
+    lst.extend(lists[-3:])
+
+    for newest_file in lst:
+        srcfile = 'C:/Users/CDHT-GX/Desktop/美图批处理照片/' + newest_file
+        dstfile = 'C:/Users/CDHT-GX/Desktop/python_test/' + newest_file
+        mycopyfile(srcfile,dstfile)
+    lst = []
+
+scheduler = BlockingScheduler()
+dayOfWeek = datetime.now().isoweekday()
+if dayOfWeek != 5:
+    scheduler.add_job(new_report,'cron',day_of_week='0-3', hour=15, minute=47)  #day_of_week (int 或 str)	周内第几天或者星期几 (范围0-6 或者 mon,tue,wed,thu,fri,sat,sun)
+    scheduler.start()
+    
+else:
+    scheduler.add_job(new_report1,'cron',day_of_week='fri', hour=15, minute=53)  #day_of_week (int 或 str)	周内第几天或者星期几 (范围0-6 或者 mon,tue,wed,thu,fri,sat,sun)
+    scheduler.start()
